@@ -4,15 +4,27 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css">
     <title>Document</title>
 </head>
+   
 <body>
 
     <button onClick="toggleMode(modes.pan)">Toggle Pan</button>
     <button onClick="toggleMode(modes.draw)">Toggle Draw</button>
+    <input  id="colorPicker" value="#000000" data-jscolor="{}">
+    <button onClick="clearCanvas(canvas)">Clear</button>
     <canvas id="canvas"></canvas>
+
+    <div id="objectsButtonsWrapper">
+        <p id="objectsTitle">Objects</p>
+        <div id="objectsButtons">
+            <button onclick="toggleMode(modes.rect)">Rect</button>
+            <button onclick="toggleMode(modes.circ)">Circ</button>
+        </div>
+    </div>
     
-    
+<script src="./lib/jscolor.js"></script> 
 <script src="./lib/fabric.min.js"></script>
 <script src="index.js"></script>
 </body>

@@ -1,3 +1,14 @@
+let mousePressed = false;
+let currentMode;
+let color = '#000000'
+
+const modes = {
+    pan: 'pan',
+    draw: 'draw',
+    rect: 'rect',
+    circ: 'circ'
+}
+
 const initCanvas = (id) => {
     return new fabric.Canvas(id, {
         selection: false,
@@ -17,16 +28,6 @@ const setBackground = (canvas, path) => {
     }); 
 }
 
-
-
-let mousePressed = false;
-let currentMode;
-
-const modes = {
-    pan: 'pan',
-    draw: 'draw'
-}
-
 const toggleMode = (mode) => {
     (currentMode != mode) ? currentMode = mode : currentMode = '';
 
@@ -34,6 +35,7 @@ const toggleMode = (mode) => {
         case modes.draw:
             canvas.isDrawingMode = !canvas.isDrawingMode;
             break;
+
     }
 
     //always turn off drawing mode if you toggle any other mode
@@ -52,9 +54,14 @@ const setPanEvents = (canvas) => {
         if(mousePressed){
             switch(currentMode) {
                 case modes.pan:
+                    canvas.setCursor('grab');
                     canvas.relativePan(delta);
                     break;
                 case modes.draw:
+                    break;
+                case modes.rect:
+                    break;
+                case modes.circ:
                     break;
             }
             
@@ -63,10 +70,18 @@ const setPanEvents = (canvas) => {
 
     //mouse click down
     canvas.on('mouse:down', (e) => {
+        const mEvent = e.e;
         mousePressed = true;
         switch(currentMode) {
             case modes.pan:
                 canvas.setCursor('grab');
+                break;
+            case modes.rect:
+                drawRect(canvas,mEvent.offsetX,mEvent.offsetY);
+                break;
+                case modes.circ:
+                    drawCirc(canvas,mEvent.offsetX,mEvent.offsetY);
+                    break;
         }
         
     });
@@ -77,6 +92,49 @@ const setPanEvents = (canvas) => {
     });
 }
 
+const setColorListener = () => {
+    const picker = document.getElementById("colorPicker");
+    picker.addEventListener('change', (event) => { 
+        color = event.target.value;
+        canvas.freeDrawingBrush.color = color;
+    })
+}
+
+const clearCanvas = (canvas) => {
+    canvasObjects = canvas.getObjects();
+    canvasObjects.forEach(obj => canvas.remove(obj));
+}
+
+const drawRect = (canvas,x,y) => {
+    rect = new fabric.Rect({
+        width: 50, 
+        height: 50, 
+        fill: color,
+        left: x,
+        top: y,
+        originX: 'center',
+        originY: 'center'
+
+    });
+    canvas.add(rect);
+}
+
+const drawCirc = (canvas, x, y) => {
+    circ = new fabric.Circle({
+        radius: 50, 
+        length: 50, 
+        fill: color,
+        left: x,
+        top: y,
+        originX: 'center',
+        originY: 'center'
+
+    });
+    canvas.add(circ);
+
+}
+
 const canvas = initCanvas('canvas');
 setBackground(canvas, "img/box.jpg");
 setPanEvents(canvas);
+setColorListener();
