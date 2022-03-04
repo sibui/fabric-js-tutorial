@@ -1,6 +1,9 @@
 let mousePressed = false;
 let currentMode;
-let color = '#000000'
+let color = '#000000';
+let group = {};
+let svgState = {};
+let bg = "img/box.jpg";
 
 const modes = {
     pan: 'pan',
@@ -24,7 +27,7 @@ const setBackground = (canvas, path) => {
     
     fabric.Image.fromObject(backgroundImg, (img) => {
         canvas.backgroundImage = img; 
-        canvas.renderAll();
+        canvas.requestRenderAll();
     }); 
 }
 
@@ -43,7 +46,7 @@ const toggleMode = (mode) => {
         canvas.isDrawingMode = false;
     }
 
-    canvas.renderAll();
+    canvas.requestRenderAll();
 }
 
 const setPanEvents = (canvas) => {
@@ -113,7 +116,7 @@ const drawRect = (canvas,x,y) => {
         left: x,
         top: y,
         originX: 'center',
-        originY: 'center'
+        originY: 'center',
 
     });
     canvas.add(rect);
@@ -127,14 +130,47 @@ const drawCirc = (canvas, x, y) => {
         left: x,
         top: y,
         originX: 'center',
-        originY: 'center'
-
+        originY: 'center',
     });
     canvas.add(circ);
-
 }
 
+const groupObjects = (canvas, group, shouldGroup) => {
+    if (shouldGroup) {
+        const objects = canvas.getObjects();
+        group.val = new fabric.Group(objects);
+        clearCanvas(canvas);
+        canvas.add(group.val);
+        canvas.requestRenderAll();
+    }
+    else {
+        group.val.destroy();
+        const oldGroup = group.val.getObjects();
+        canvas.remove(group.val);
+        canvas.add(...oldGroup);
+        group.val = null;
+        canvas.requestRenderAll();
+    }
+}
+
+const imgAdded = (e) => {
+    inputElement = document.getElementById('myImg');
+    const file = inputElement.files[0];
+    reader.readAsDataURL(file);
+    
+}
+
+
 const canvas = initCanvas('canvas');
-setBackground(canvas, "img/box.jpg");
+const inputFile = document.getElementById('myImg');
+const reader = new FileReader()
+setBackground(canvas, bg);
 setPanEvents(canvas);
 setColorListener();
+inputFile.addEventListener('change', imgAdded);
+reader.addEventListener("load", () => {
+    fabric.Image.fromURL(reader.result, img => {
+        canvas.add(img);
+        canvas.requestRenderAll()
+    })
+})

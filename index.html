@@ -16,13 +16,22 @@
     <button onClick="clearCanvas(canvas)">Clear</button>
     <canvas id="canvas"></canvas>
 
-    <div id="objectsButtonsWrapper">
-        <p id="objectsTitle">Objects</p>
+    <div class="objectsButtonsWrapper">
+        <p class="objectsTitle">Objects</p>
         <div id="objectsButtons">
-            <button onclick="toggleMode(modes.rect)">Rect</button>
-            <button onclick="toggleMode(modes.circ)">Circ</button>
+            <button onClick="toggleMode(modes.rect)">Rect</button>
+            <button onClick="toggleMode(modes.circ)">Circ</button>
         </div>
+        <button onClick="groupObjects(canvas, group, true)">Group</button>
+        <button onClick="groupObjects(canvas, group, false)">UnGroup</button>
     </div>
+
+    <div class="objectsButtonsWrapper">
+        <p class="objectsTitle">Add Image</p>
+        <input type="file" id="myImg" style="display: none;" />
+<input type="button" value="Browse" onclick="document.getElementById('myImg').click();" />
+    </div>
+    
     
 <script src="./lib/jscolor.js"></script> 
 <script src="./lib/fabric.min.js"></script>
